@@ -43,9 +43,9 @@ export default function ParticleBackground() {
 
       draw() {
         if (!ctx) return;
-        ctx.fillStyle = `rgba(0, 242, 255, ${this.opacity})`;
+        ctx.fillStyle = `rgba(0, 184, 212, ${this.opacity})`;
         ctx.shadowBlur = 10;
-        ctx.shadowColor = 'rgba(0, 242, 255, 0.5)';
+        ctx.shadowColor = 'rgba(0, 184, 212, 0.5)';
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();

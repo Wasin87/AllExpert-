@@ -20,10 +20,12 @@ import Settings from './pages/Settings';
 import More from './pages/More';
 
 import Tasbih from './pages/tools/Tasbih';
-import QRGenerator from './pages/tools/QRGenerator';
 import Stopwatch from './pages/tools/Stopwatch';
 import PasswordGenerator from './pages/tools/PasswordGenerator';
-import ScanText from './pages/tools/ScanText';
+
+import GameList from './pages/games/GameList';
+import TicTacToe from './pages/games/TicTacToe';
+import RockPaperScissors from './pages/games/RockPaperScissors';
 
 import About from './pages/About';
 import Privacy from './pages/Privacy';
@@ -56,10 +58,13 @@ export default function App() {
           <Route path="notes" element={<Notes />} />
           <Route path="tools" element={<Tools />} />
           <Route path="tools/tasbih" element={<Tasbih />} />
-          <Route path="tools/qr" element={<QRGenerator />} />
           <Route path="tools/stopwatch" element={<Stopwatch />} />
           <Route path="tools/password" element={<PasswordGenerator />} />
-          <Route path="tools/scantext" element={<ScanText />} />
+          
+          <Route path="games" element={<GameList />} />
+          <Route path="games/tictactoe" element={<TicTacToe />} />
+          <Route path="games/rps" element={<RockPaperScissors />} />
+
           <Route path="settings" element={<Settings />} />
           <Route path="more" element={<More />} />
           <Route path="about" element={<About />} />

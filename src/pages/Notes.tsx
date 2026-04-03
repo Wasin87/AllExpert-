@@ -191,19 +191,19 @@ export default function Notes() {
                         handleHideAction(note.id);
                       }
                     }}
-                    className={`p-1.5 rounded-lg glass transition-all ${note.isHidden ? 'text-[var(--color-accent-notes)] opacity-100' : 'text-gray-500 opacity-0 group-hover:opacity-100 hover:text-white'}`}
+                    className={`p-1.5 rounded-lg glass transition-all ${note.isHidden ? 'text-[var(--color-accent-notes)]' : 'text-gray-500 hover:text-white'}`}
                   >
                     {note.isHidden ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); togglePin(note.id); }}
-                    className={`p-1.5 rounded-lg glass transition-all ${note.isPinned ? 'text-[var(--color-accent-notes)] shadow-[0_0_10px_rgba(191,0,255,0.2)]' : 'text-gray-500 opacity-0 group-hover:opacity-100 hover:text-white'}`}
+                    className={`p-1.5 rounded-lg glass transition-all ${note.isPinned ? 'text-[var(--color-accent-notes)] shadow-[0_0_10px_rgba(191,0,255,0.2)]' : 'text-gray-500 hover:text-white'}`}
                   >
                     <Pin className="w-3.5 h-3.5" />
                   </button>
                   <button 
                     onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }}
-                    className="p-1.5 rounded-lg glass text-red-500/70 opacity-0 group-hover:opacity-100 hover:text-red-400 transition-all"
+                    className="p-1.5 rounded-lg glass text-red-500/70 hover:text-red-400 transition-all"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>

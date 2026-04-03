@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
-import { QrCode, Timer, Key, ArrowRightLeft, Hash, ChevronLeft, ScanText as ScanTextIcon } from 'lucide-react';
+import { Timer, Key, ArrowRightLeft, Hash, ChevronLeft, Gamepad2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Tools() {
@@ -8,12 +8,11 @@ export default function Tools() {
   const navigate = useNavigate();
 
   const tools = [
-    { id: 'qr', icon: QrCode, label: 'QR Generator', path: '/tools/qr', color: 'bg-blue-500', desc: 'Create custom QR codes' },
+    { id: 'games', icon: Gamepad2, label: 'Game Zone', path: '/games', color: 'bg-indigo-500', desc: 'Play fun mini-games' },
     { id: 'stopwatch', icon: Timer, label: 'Stopwatch', path: '/tools/stopwatch', color: 'bg-red-500', desc: 'Track time with laps' },
     { id: 'password', icon: Key, label: 'Password Generator', path: '/tools/password', color: 'bg-green-500', desc: 'Secure random passwords' },
     { id: 'tasbih', icon: Hash, label: 'Tasbih', path: '/tools/tasbih', color: 'bg-emerald-500', desc: 'Digital tally counter' },
     { id: 'converter', icon: ArrowRightLeft, label: 'Converter', path: '/converter', color: 'bg-[var(--color-accent-conv)]', desc: 'Convert all units' },
-    { id: 'scantext', icon: ScanTextIcon, label: 'Scan Text', path: '/tools/scantext', color: 'bg-purple-500', desc: 'Extract text from images' },
   ];
 
   return (
