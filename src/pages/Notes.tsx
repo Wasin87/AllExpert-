@@ -58,7 +58,7 @@ export default function Notes() {
   const [showCamera, setShowCamera] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [isReadOnly, setIsReadOnly] = useState(false);
-  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [fullscreenAttachment, setFullscreenAttachment] = useState<NoteAttachment | null>(null);
   const [fontSizeInput, setFontSizeInput] = useState('');
   const [currentFormat, setCurrentFormat] = useState<any>({});
   const [savedSelection, setSavedSelection] = useState<any>(null);
@@ -68,6 +68,7 @@ export default function Notes() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   
   // Quill Modules and Formats
   const modules = {
@@ -341,7 +342,7 @@ export default function Notes() {
     closeEditor();
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file' | 'video') => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file' | 'video' | 'camera') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -354,7 +355,7 @@ export default function Notes() {
       } else {
         const attachment: NoteAttachment = {
           id: crypto.randomUUID(),
-          type,
+          type: type === 'camera' ? 'camera' : type,
           url,
           name: file.name,
           fileType: file.type
@@ -384,19 +385,24 @@ export default function Notes() {
   };
 
   const startCamera = async () => {
-    setShowCamera(true);
-    setCameraError(null);
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (err) {
-      console.error("Error accessing camera:", err);
-      if (err instanceof DOMException && err.name === 'NotAllowedError') {
-        setCameraError('Camera permission denied. Please enable camera access in your browser settings.');
-      } else {
-        setCameraError('Failed to access camera. Please try again.');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      cameraInputRef.current?.click();
+    } else {
+      setShowCamera(true);
+      setCameraError(null);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error("Error accessing camera:", err);
+        if (err instanceof DOMException && err.name === 'NotAllowedError') {
+          setCameraError('Camera permission denied. Please enable camera access in your browser settings.');
+        } else {
+          setCameraError('Failed to access camera. Please try again.');
+        }
       }
     }
   };
@@ -442,6 +448,36 @@ export default function Notes() {
       updateAttachmentsWithHistory([...newAttachments, attachment]);
     }
     setShowDrawingCanvas(false);
+  };
+
+  const handleDownloadFile = async (e: React.MouseEvent, url: string, filename: string) => {
+    e.stopPropagation();
+    try {
+      // Create a blob from the data URL to ensure mobile compatibility
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      
+      // Clean up the object URL after a short delay
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+    } catch (error) {
+      console.error('Download failed, falling back to direct link:', error);
+      // Fallback for older browsers or if fetch fails
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'download';
+      a.target = '_blank';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   const handleTableSave = (tableData: NoteTable) => {
@@ -925,10 +961,6 @@ export default function Notes() {
             <div className="flex-1 flex flex-col p-5 gap-4 overflow-y-auto scrollbar-hide relative">
             {/* Header Layout Restructure: Category + Tools first */}
             <div className="flex items-center z-20 bg-[var(--bg)]/90 backdrop-blur-xl py-2 sticky top-0 -mt-2 gap-3 border-b border-white/10 px-4 shadow-xl">
-              <button onClick={handleBack} className="p-2 rounded-xl glass text-gray-400 hover:text-white transition-all flex-shrink-0" title={t('Back')}>
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              
               <div className="flex-shrink-0">
                 <div className="relative group">
                   <select 
@@ -997,7 +1029,7 @@ export default function Notes() {
                       {!isReadOnly && (
                         <div className="absolute top-1 right-1 z-10 flex flex-col gap-1 opacity-80 hover:opacity-100 transition-opacity">
                           <button 
-                            onClick={() => setFullscreenImage(att.url)}
+                            onClick={() => setFullscreenAttachment(att)}
                             className="p-1.5 rounded-md bg-indigo-500/90 text-white hover:bg-indigo-500 transition-colors shadow-lg backdrop-blur-md"
                             title={t('Full Screen')}
                           >
@@ -1051,7 +1083,10 @@ export default function Notes() {
                             />
                           </div>
                         ) : att.type === 'file' ? (
-                          <div className="w-full h-full flex flex-col items-center justify-center p-4 gap-2">
+                          <div 
+                            className="w-full h-full flex flex-col items-center justify-center p-4 gap-2 cursor-pointer hover:bg-white/5 transition-colors"
+                            onClick={() => setFullscreenAttachment(att)}
+                          >
                             <div className="w-12 h-12 rounded-xl bg-[var(--color-accent-notes)]/10 flex items-center justify-center border border-[var(--color-accent-notes)]/20">
                               <FileText className="w-6 h-6 text-[var(--color-accent-notes)]" />
                             </div>
@@ -1059,20 +1094,6 @@ export default function Notes() {
                               <p className="text-xs font-bold text-white/90 truncate w-full px-2">{att.name}</p>
                               <p className="text-[9px] text-gray-500 uppercase tracking-tighter">{att.fileType || 'Document'}</p>
                             </div>
-                            <button 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const a = document.createElement('a');
-                                a.href = att.url;
-                                a.download = att.name || 'download';
-                                document.body.appendChild(a);
-                                a.click();
-                                document.body.removeChild(a);
-                              }}
-                              className="mt-1 px-3 py-1 rounded-lg glass text-[10px] font-bold hover:bg-white/10 transition-all"
-                            >
-                              {t('Download')}
-                            </button>
                           </div>
                         ) : (
                           <div className="w-full h-full">
@@ -1080,7 +1101,7 @@ export default function Notes() {
                               src={att.url} 
                               alt={att.name} 
                               className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-                              onClick={() => setFullscreenImage(att.url)}
+                              onClick={() => setFullscreenAttachment(att)}
                             />
                             <div className="absolute bottom-2 left-2 glass px-2 py-0.5 rounded-full text-[9px] font-bold text-white/70">
                               {att.type === 'camera' ? t('Photo') : t('Image')}
@@ -1097,6 +1118,7 @@ export default function Notes() {
               <input type="file" ref={imageInputRef} className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'image')} />
               <input type="file" ref={videoInputRef} className="hidden" accept="video/*" onChange={(e) => handleFileUpload(e, 'video')} />
               <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx" onChange={(e) => handleFileUpload(e, 'file')} />
+              <input type="file" ref={cameraInputRef} className="hidden" accept="image/*" capture="environment" onChange={(e) => handleFileUpload(e, 'camera')} />
 
               {/* Editor third */}
               <div className="min-h-[300px] quill-editor-container relative overflow-visible">
@@ -1376,27 +1398,63 @@ export default function Notes() {
         )}
       </AnimatePresence>
 
-      {/* Fullscreen Image Preview */}
+      {/* Fullscreen Attachment Preview */}
       <AnimatePresence>
-        {fullscreenImage && (
+        {fullscreenAttachment && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setFullscreenImage(null)}
+            onClick={() => setFullscreenAttachment(null)}
             className="fixed inset-0 z-[200] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 cursor-pointer"
           >
-            <motion.img 
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              src={fullscreenImage} 
-              alt="Fullscreen" 
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            />
+            <div className="w-full h-full max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              {fullscreenAttachment.type === 'image' || fullscreenAttachment.type === 'camera' || fullscreenAttachment.type === 'drawing' ? (
+                <motion.img 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  src={fullscreenAttachment.url} 
+                  alt={fullscreenAttachment.name || "Fullscreen"} 
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                />
+              ) : fullscreenAttachment.type === 'video' ? (
+                <motion.video 
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  src={fullscreenAttachment.url} 
+                  controls 
+                  autoPlay 
+                  className="max-w-full max-h-full rounded-lg shadow-2xl"
+                />
+              ) : fullscreenAttachment.type === 'file' ? (
+                  <motion.div 
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="glass p-10 rounded-3xl flex flex-col items-center text-center max-w-md w-full shadow-2xl border border-white/10"
+                  >
+                    <div className="w-24 h-24 rounded-2xl bg-[var(--color-accent-notes)]/20 flex items-center justify-center mb-6 border border-[var(--color-accent-notes)]/30">
+                      <FileText className="w-12 h-12 text-[var(--color-accent-notes)]" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white mb-2 break-all">{fullscreenAttachment.name}</h3>
+                    <p className="text-gray-400 mb-8">{fullscreenAttachment.fileType || 'Document'}</p>
+                    <button 
+                      onClick={(e) => handleDownloadFile(e, fullscreenAttachment.url, fullscreenAttachment.name || 'download')}
+                      className="w-full py-4 rounded-xl bg-[var(--color-accent-notes)] text-white font-bold shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    >
+                      <Download className="w-5 h-5" />
+                      {t('Download to View')}
+                    </button>
+                    <p className="text-xs text-gray-500 mt-4">
+                      {t('Preview is not natively supported for this file type in browsers.')}
+                    </p>
+                  </motion.div>
+              ) : null}
+            </div>
             <button 
-              onClick={() => setFullscreenImage(null)}
+              onClick={() => setFullscreenAttachment(null)}
               className="absolute top-6 right-6 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
             >
               <X className="w-6 h-6" />
