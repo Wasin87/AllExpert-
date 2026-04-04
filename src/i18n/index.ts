@@ -62,6 +62,15 @@ const resources = {
       "Include Numbers": "Include Numbers",
       "Include Symbols": "Include Symbols",
       "Include Uppercase": "Include Uppercase",
+      "Change Password": "Change Password",
+      "Update Password": "Update Password",
+      "Forgot Password?": "Forgot Password?",
+      "Current Password": "Current Password",
+      "New Password": "New Password",
+      "Incorrect current password": "Incorrect current password",
+      "New password must be at least 4 characters": "New password must be at least 4 characters",
+      "Are you sure you want to reset your password? This will unhide all hidden notes.": "Are you sure you want to reset your password? This will unhide all hidden notes.",
+      "Enter your current password and a new one.": "Enter your current password and a new one.",
     }
   },
   bn: {
@@ -124,6 +133,15 @@ const resources = {
       "Include Numbers": "সংখ্যা অন্তর্ভুক্ত করুন",
       "Include Symbols": "প্রতীক অন্তর্ভুক্ত করুন",
       "Include Uppercase": "বড় হাতের অক্ষর অন্তর্ভুক্ত করুন",
+      "Change Password": "পাসওয়ার্ড পরিবর্তন করুন",
+      "Update Password": "পাসওয়ার্ড আপডেট করুন",
+      "Forgot Password?": "পাসওয়ার্ড ভুলে গেছেন?",
+      "Current Password": "বর্তমান পাসওয়ার্ড",
+      "New Password": "নতুন পাসওয়ার্ড",
+      "Incorrect current password": "বর্তমান পাসওয়ার্ড ভুল",
+      "New password must be at least 4 characters": "নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে",
+      "Are you sure you want to reset your password? This will unhide all hidden notes.": "আপনি কি নিশ্চিত যে আপনি আপনার পাসওয়ার্ড রিসেট করতে চান? এটি সমস্ত লুকানো নোট প্রদর্শন করবে।",
+      "Enter your current password and a new one.": "আপনার বর্তমান পাসওয়ার্ড এবং একটি নতুন পাসওয়ার্ড লিখুন।",
     }
   }
 };

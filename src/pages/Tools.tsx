@@ -1,22 +1,41 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'motion/react';
-import { Timer, Key, ArrowRightLeft, Hash, ChevronLeft, Gamepad2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Timer, Key, ArrowRightLeft, ChevronLeft, Gamepad2, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import TasbihIcon from '@/components/icons/TasbihIcon';
 
 export default function Tools() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const tools = [
     { id: 'games', icon: Gamepad2, label: 'Game Zone', path: '/games', color: 'bg-indigo-500', desc: 'Play fun mini-games' },
     { id: 'stopwatch', icon: Timer, label: 'Stopwatch', path: '/tools/stopwatch', color: 'bg-red-500', desc: 'Track time with laps' },
     { id: 'password', icon: Key, label: 'Password Generator', path: '/tools/password', color: 'bg-green-500', desc: 'Secure random passwords' },
-    { id: 'tasbih', icon: Hash, label: 'Tasbih', path: '/tools/tasbih', color: 'bg-emerald-500', desc: 'Digital tally counter' },
+    { id: 'tasbih', icon: TasbihIcon, label: 'Tasbih', path: '/tools/tasbih', color: 'bg-emerald-500', desc: 'Digital tally counter' },
     { id: 'converter', icon: ArrowRightLeft, label: 'Converter', path: '/converter', color: 'bg-[var(--color-accent-conv)]', desc: 'Convert all units' },
   ];
 
   return (
-    <div className="p-6 h-full flex flex-col bg-[var(--bg)] pb-24">
+    <div className="p-6 h-full flex flex-col bg-[var(--bg)] pb-24 relative">
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 bg-[var(--bg)] flex items-center justify-center"
+          >
+            <Loader2 className="w-8 h-8 text-[var(--color-accent-tools)] animate-spin" />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div 
         className="flex items-center gap-2 mb-6 cursor-pointer group w-fit"
         onClick={() => navigate('/')}

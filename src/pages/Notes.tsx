@@ -9,7 +9,7 @@ const CATEGORIES = ['Personal', 'Travel', 'Important', 'Idea', 'Study', 'Expense
 
 export default function Notes() {
   const { t } = useTranslation();
-  const { notes, addNote, updateNote, deleteNote, togglePin, toggleHide, hidePassword, setHidePassword } = useNotesStore();
+  const { notes, addNote, updateNote, deleteNote, togglePin, toggleHide, hidePassword, setHidePassword, resetPassword } = useNotesStore();
   const [search, setSearch] = useState('');
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -21,8 +21,10 @@ export default function Notes() {
   // Password Modal State
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const [newPasswordInput, setNewPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [pendingAction, setPendingAction] = useState<{type: 'view_hidden' | 'hide_note', noteId?: string} | null>(null);
+  const [pendingAction, setPendingAction] = useState<{type: 'view_hidden' | 'hide_note' | 'change_password', noteId?: string} | null>(null);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const filteredNotes = notes.filter(n => 
     (showHidden ? n.isHidden : !n.isHidden) &&
@@ -110,6 +112,18 @@ export default function Notes() {
       }
       
       closePasswordModal();
+    } else if (isChangingPassword) {
+      // Changing existing password
+      if (passwordInput !== hidePassword) {
+        setPasswordError('Incorrect current password');
+        return;
+      }
+      if (newPasswordInput.length < 4) {
+        setPasswordError('New password must be at least 4 characters');
+        return;
+      }
+      setHidePassword(newPasswordInput);
+      closePasswordModal();
     } else {
       // Verifying existing password
       if (passwordInput === hidePassword) {
@@ -125,11 +139,20 @@ export default function Notes() {
     }
   };
 
+  const handleResetPassword = () => {
+    if (window.confirm(t('Are you sure you want to reset your password? This will unhide all hidden notes.'))) {
+      resetPassword();
+      closePasswordModal();
+    }
+  };
+
   const closePasswordModal = () => {
     setShowPasswordModal(false);
     setPasswordInput('');
+    setNewPasswordInput('');
     setPasswordError('');
     setPendingAction(null);
+    setIsChangingPassword(false);
   };
 
   return (
@@ -291,7 +314,7 @@ export default function Notes() {
                 <div className="flex items-center gap-2 text-[var(--color-accent-notes)]">
                   <Lock className="w-6 h-6" />
                   <h3 className="text-xl font-bold">
-                    {!hidePassword ? t('Set Password') : t('Enter Password')}
+                    {!hidePassword ? t('Set Password') : isChangingPassword ? t('Change Password') : t('Enter Password')}
                   </h3>
                 </div>
                 <button onClick={closePasswordModal} className="text-gray-500 hover:text-white transition-colors">
@@ -302,34 +325,79 @@ export default function Notes() {
               <p className="text-sm text-gray-400 mb-6">
                 {!hidePassword 
                   ? t('Create a password to protect your hidden notes. You will need this to view them later.') 
+                  : isChangingPassword 
+                  ? t('Enter your current password and a new one.')
                   : t('Enter your password to access hidden notes.')}
               </p>
 
-              <input
-                type="password"
-                placeholder={t('Password')}
-                value={passwordInput}
-                onChange={e => {
-                  setPasswordInput(e.target.value);
-                  setPasswordError('');
-                }}
-                className="w-full px-4 py-3 rounded-xl glass outline-none focus:border-[var(--color-accent-notes)] transition-colors mb-2 text-[var(--text)]"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handlePasswordSubmit();
-                }}
-              />
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs text-gray-500 mb-1 block">{isChangingPassword ? t('Current Password') : t('Password')}</label>
+                  <input
+                    type="password"
+                    placeholder={isChangingPassword ? t('Current Password') : t('Password')}
+                    value={passwordInput}
+                    onChange={e => {
+                      setPasswordInput(e.target.value);
+                      setPasswordError('');
+                    }}
+                    className="w-full px-4 py-3 rounded-xl glass outline-none focus:border-[var(--color-accent-notes)] transition-colors text-[var(--text)]"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !isChangingPassword) handlePasswordSubmit();
+                    }}
+                  />
+                </div>
+
+                {isChangingPassword && (
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">{t('New Password')}</label>
+                    <input
+                      type="password"
+                      placeholder={t('New Password')}
+                      value={newPasswordInput}
+                      onChange={e => {
+                        setNewPasswordInput(e.target.value);
+                        setPasswordError('');
+                      }}
+                      className="w-full px-4 py-3 rounded-xl glass outline-none focus:border-[var(--color-accent-notes)] transition-colors text-[var(--text)]"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handlePasswordSubmit();
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
               
               {passwordError && (
-                <p className="text-red-500 text-xs mb-4">{t(passwordError)}</p>
+                <p className="text-red-500 text-xs mt-2">{t(passwordError)}</p>
               )}
 
-              <button
-                onClick={handlePasswordSubmit}
-                className="w-full py-3 mt-4 rounded-xl bg-[var(--color-accent-notes)] text-white font-medium shadow-lg transition-transform active:scale-95"
-              >
-                {!hidePassword ? t('Set Password & Continue') : t('Unlock')}
-              </button>
+              <div className="flex flex-col gap-2 mt-6">
+                <button
+                  onClick={handlePasswordSubmit}
+                  className="w-full py-3 rounded-xl bg-[var(--color-accent-notes)] text-white font-medium shadow-lg transition-transform active:scale-95"
+                >
+                  {!hidePassword ? t('Set Password & Continue') : isChangingPassword ? t('Update Password') : t('Unlock')}
+                </button>
+
+                {hidePassword && !isChangingPassword && (
+                  <div className="flex justify-between mt-2">
+                    <button 
+                      onClick={() => setIsChangingPassword(true)}
+                      className="text-xs text-[var(--color-accent-notes)] hover:underline"
+                    >
+                      {t('Change Password')}
+                    </button>
+                    <button 
+                      onClick={handleResetPassword}
+                      className="text-xs text-red-500/70 hover:underline"
+                    >
+                      {t('Forgot Password?')}
+                    </button>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </div>
         )}

@@ -99,17 +99,42 @@ export default function Calculator() {
     if (btn === 'C') onClick = handleClear;
     if (btn === 'DEL') onClick = handleDelete;
     if (btn === '=') onClick = handleCalculate;
-    if (btn === '()') onClick = () => handleInput('('); // Simplified for now
+    if (btn === '()') onClick = () => handleInput('(');
+
+    let bgColor = 'bg-white/5';
+    let textColor = 'text-white';
+    let shadowColor = 'rgba(255,255,255,0.1)';
+
+    if (isEquals) {
+      bgColor = 'bg-[var(--color-accent-calc)]';
+      textColor = 'text-white';
+      shadowColor = 'rgba(191,0,255,0.4)';
+    } else if (btn === 'C') {
+      bgColor = 'bg-red-500';
+      textColor = 'text-white';
+      shadowColor = 'rgba(239,68,68,0.4)';
+    } else if (btn === 'DEL') {
+      bgColor = 'bg-yellow-500';
+      textColor = 'text-black';
+      shadowColor = 'rgba(234,179,8,0.4)';
+    } else if (isOperator) {
+      bgColor = 'bg-green-500';
+      textColor = 'text-white';
+      shadowColor = 'rgba(34,197,94,0.4)';
+    } else if (btn === '()' || btn === '%') {
+      bgColor = 'bg-[#00B8D4]';
+      textColor = 'text-white';
+      shadowColor = 'rgba(0,184,212,0.4)';
+    }
 
     return (
       <motion.button
         key={btn}
         whileTap={{ scale: 0.9 }}
         onClick={onClick}
-        className={`h-14 rounded-xl text-lg font-medium flex items-center justify-center transition-all duration-300 shadow-sm border
-          ${isEquals ? 'bg-[var(--color-accent-calc)] text-white border-transparent shadow-[0_0_15px_rgba(191,0,255,0.4)]' : 
-            'bg-white/5 text-white border-white/5 hover:bg-white/10'}
-          ${btn === 'C' ? 'text-[var(--color-accent-calc)]' : ''}`}
+        className={`h-14 rounded-xl text-lg font-bold flex items-center justify-center transition-all duration-300 shadow-lg border border-white/10
+          ${bgColor} ${textColor}`}
+        style={{ boxShadow: `0 4px 15px ${shadowColor}` }}
       >
         {btn === 'DEL' ? <Delete className="w-5 h-5" /> : btn}
       </motion.button>
@@ -117,7 +142,7 @@ export default function Calculator() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[var(--bg)] pb-20 md:pb-0">
+    <div className="flex flex-col h-full bg-[var(--bg)] pb-24 md:pb-0">
       {/* Header */}
       <div className="flex justify-between items-center p-4">
         <div className="flex gap-2 glass border border-white/5 p-1 rounded-xl shadow-sm">
@@ -146,7 +171,7 @@ export default function Calculator() {
       </div>
 
       {/* Display */}
-      <div className="flex-1 flex flex-col justify-end p-6 pb-4 relative">
+      <div className="flex-1 flex flex-col justify-end p-6 pb-10 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[var(--bg)] pointer-events-none" />
         <div 
           ref={displayRef}
@@ -160,7 +185,7 @@ export default function Calculator() {
       </div>
 
       {/* Keypad */}
-      <div className="p-5 glass rounded-t-[2.5rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+      <div className="p-5 pt-8 glass rounded-t-[2.5rem] border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.4)] mb-2">
         {isScientific && (
           <div className="grid grid-cols-4 gap-2 mb-3">
             {scientificButtons.flat().map(btn => (

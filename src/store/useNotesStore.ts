@@ -21,6 +21,7 @@ interface NotesState {
   deleteNote: (id: string) => void;
   togglePin: (id: string) => void;
   toggleHide: (id: string) => void;
+  resetPassword: () => void;
 }
 
 export const useNotesStore = create<NotesState>()(
@@ -57,6 +58,10 @@ export const useNotesStore = create<NotesState>()(
         notes: state.notes.map((note) =>
           note.id === id ? { ...note, isHidden: !note.isHidden, updatedAt: Date.now() } : note
         )
+      })),
+      resetPassword: () => set((state) => ({
+        hidePassword: null,
+        notes: state.notes.map(n => ({ ...n, isHidden: false }))
       })),
     }),
     {
