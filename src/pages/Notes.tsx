@@ -21,7 +21,7 @@ const FONT_FAMILIES = [
 
 const QuillEditor = ReactQuill as any;
 import { useNotesStore, Note, NoteAttachment, NoteFormatting } from '@/store/useNotesStore';
-import { Plus, Search, Pin, Trash2, X, Check, Eye, EyeOff, Lock, Image as ImageIcon, FileText, Camera, Type, Pencil, AlignLeft, AlignCenter, AlignRight, Bold, Palette, Type as FontSizeIcon, MoreVertical, Download, Table as TableIcon, Edit2, List, ListOrdered, Hash, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Undo2, Redo2, Minus, PlusCircle } from 'lucide-react';
+import { Plus, Search, Pin, Trash2, X, Check, Eye, EyeOff, Lock, Image as ImageIcon, FileText, Camera, Type, Pencil, AlignLeft, AlignCenter, AlignRight, Bold, Palette, Type as FontSizeIcon, MoreVertical, Download, Table as TableIcon, Edit2, List, ListOrdered, Hash, ChevronLeft, ChevronRight, ChevronUp, ChevronDown, Undo2, Redo2, Minus, PlusCircle, Video } from 'lucide-react';
 import { format } from 'date-fns';
 import DrawingCanvas from '@/components/DrawingCanvas';
 import TableEditor from '@/components/TableEditor';
@@ -50,6 +50,7 @@ export default function Notes() {
     alignment: 'left',
     fontFamily: 'Inter'
   });
+  const [showPlusMenu, setShowPlusMenu] = useState(false);
   const [showFormattingMenu, setShowFormattingMenu] = useState(false);
   const [showDrawingCanvas, setShowDrawingCanvas] = useState(false);
   const [editingAttachment, setEditingAttachment] = useState<NoteAttachment | null>(null);
@@ -66,6 +67,7 @@ export default function Notes() {
   const quillRef = useRef<ReactQuill>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   
   // Quill Modules and Formats
   const modules = {
@@ -209,8 +211,8 @@ export default function Notes() {
           const editorContainer = quill.container.parentElement; // quill-editor-container
           
           setSelectionToolbar({
-            x: bounds.left + (bounds.width / 2) + (editorContainer?.offsetLeft || 0),
-            y: bounds.top + (editorContainer?.offsetTop || 0) - 45,
+            x: bounds.left + (bounds.width / 2),
+            y: bounds.top - 45,
             show: true
           });
 
@@ -335,7 +337,11 @@ export default function Notes() {
     setIsCreating(true);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file') => {
+  const handleBack = () => {
+    closeEditor();
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'file' | 'video') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -356,7 +362,25 @@ export default function Notes() {
         updateAttachmentsWithHistory([...newAttachments, attachment]);
       }
     };
-    reader.readAsDataURL(file);
+    if (type === 'video') {
+      // For videos, we might want to use URL.createObjectURL for better performance with large files
+      const url = URL.createObjectURL(file);
+      if (editingAttachment) {
+        updateAttachmentsWithHistory(newAttachments.map(a => a.id === editingAttachment.id ? { ...a, url, name: file.name, fileType: file.type } : a));
+        setEditingAttachment(null);
+      } else {
+        const attachment: NoteAttachment = {
+          id: crypto.randomUUID(),
+          type,
+          url,
+          name: file.name,
+          fileType: file.type
+        };
+        updateAttachmentsWithHistory([...newAttachments, attachment]);
+      }
+    } else {
+      reader.readAsDataURL(file);
+    }
   };
 
   const startCamera = async () => {
@@ -679,12 +703,66 @@ export default function Notes() {
               <button onClick={closeEditor} className="p-1.5 text-gray-500">
                 <X className="w-5 h-5" />
               </button>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 relative">
                 <span className="font-semibold text-sm">{editingNote ? (isReadOnly ? t('View Note') : t('Edit Note')) : t('New Note')}</span>
                 {editingNote && isReadOnly && (
                   <button onClick={() => setIsReadOnly(false)} className="p-1 text-[var(--color-accent-notes)]">
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
+                )}
+                
+                {/* Add Button next to Edit Note text */}
+                {!isReadOnly && (
+                  <div className="relative ml-2">
+                    <button 
+                      onClick={() => setShowPlusMenu(!showPlusMenu)}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md ${showPlusMenu ? 'bg-red-500 rotate-45' : 'bg-[var(--color-accent-notes)] hover:scale-105 active:scale-95'}`}
+                    >
+                      <Plus className="w-4 h-4 text-white" />
+                    </button>
+
+                    <AnimatePresence>
+                      {showPlusMenu && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                          className="absolute left-1/2 -translate-x-1/2 top-10 z-[100] glass border border-white/10 rounded-2xl p-2 flex flex-col gap-1 min-w-[180px] shadow-2xl backdrop-blur-2xl origin-top"
+                        >
+                          <button onClick={() => { imageInputRef.current?.click(); setShowPlusMenu(false); }} className="flex items-center gap-3 px-3 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm text-white/90">
+                            <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                              <ImageIcon className="w-4.5 h-4.5 text-blue-400" />
+                            </div>
+                            {t('Upload Image')}
+                          </button>
+                          <button onClick={() => { startCamera(); setShowPlusMenu(false); }} className="flex items-center gap-3 px-3 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm text-white/90">
+                            <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                              <Camera className="w-4.5 h-4.5 text-purple-400" />
+                            </div>
+                            {t('Capture Photo')}
+                          </button>
+                          <button onClick={() => { videoInputRef.current?.click(); setShowPlusMenu(false); }} className="flex items-center gap-3 px-3 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm text-white/90">
+                            <div className="w-8 h-8 rounded-lg bg-red-500/20 flex items-center justify-center">
+                              <Video className="w-4.5 h-4.5 text-red-400" />
+                            </div>
+                            {t('Upload Video')}
+                          </button>
+                          <button onClick={() => { fileInputRef.current?.click(); setShowPlusMenu(false); }} className="flex items-center gap-3 px-3 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm text-white/90">
+                            <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+                              <FileText className="w-4.5 h-4.5 text-green-400" />
+                            </div>
+                            {t('Upload File')}
+                          </button>
+                          <button onClick={() => { setShowDrawingCanvas(true); setShowPlusMenu(false); }} className="flex items-center gap-3 px-3 py-3 hover:bg-white/10 rounded-xl transition-colors text-sm text-white/90">
+                            <div className="w-8 h-8 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                              <Pencil className="w-4.5 h-4.5 text-yellow-400" />
+                            </div>
+                            {t('Draw Image')}
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 )}
               </div>
               {!isReadOnly ? (
@@ -847,6 +925,10 @@ export default function Notes() {
             <div className="flex-1 flex flex-col p-5 gap-4 overflow-y-auto scrollbar-hide relative">
             {/* Header Layout Restructure: Category + Tools first */}
             <div className="flex items-center z-20 bg-[var(--bg)]/90 backdrop-blur-xl py-2 sticky top-0 -mt-2 gap-3 border-b border-white/10 px-4 shadow-xl">
+              <button onClick={handleBack} className="p-2 rounded-xl glass text-gray-400 hover:text-white transition-all flex-shrink-0" title={t('Back')}>
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
               <div className="flex-shrink-0">
                 <div className="relative group">
                   <select 
@@ -875,18 +957,6 @@ export default function Notes() {
                     </div>
                     <div className="w-px h-6 bg-white/10 mx-1 flex-shrink-0" />
                     <div className="flex gap-2 items-center flex-nowrap">
-                      <button onClick={() => imageInputRef.current?.click()} className="p-2.5 rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition-all flex-shrink-0 shadow-sm">
-                        <ImageIcon className="w-4.5 h-4.5" />
-                      </button>
-                      <button onClick={() => fileInputRef.current?.click()} className="p-2.5 rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition-all flex-shrink-0 shadow-sm">
-                        <FileText className="w-4.5 h-4.5" />
-                      </button>
-                      <button onClick={startCamera} className="p-2.5 rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition-all flex-shrink-0 shadow-sm">
-                        <Camera className="w-4.5 h-4.5" />
-                      </button>
-                      <button onClick={() => setShowDrawingCanvas(true)} className="p-2.5 rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition-all flex-shrink-0 shadow-sm">
-                        <Pencil className="w-4.5 h-4.5" />
-                      </button>
                       <button onClick={() => setShowTableEditor(true)} className="p-2.5 rounded-xl glass text-gray-400 hover:text-white hover:bg-white/10 transition-all flex-shrink-0 shadow-sm">
                         <TableIcon className="w-4.5 h-4.5" />
                       </button>
@@ -903,21 +973,133 @@ export default function Notes() {
             </div>
 
               {/* Title second */}
-              <input
-                type="text"
-                placeholder={t('Title')}
-                value={newTitle}
-                onChange={e => setNewTitle(e.target.value)}
-                readOnly={isReadOnly}
-                className={`text-2xl font-bold bg-transparent outline-none text-[var(--text)] ${isReadOnly ? 'cursor-default' : ''}`}
-              />
+              <div className="flex items-center justify-between gap-4 z-30 relative">
+                <input
+                  type="text"
+                  placeholder={t('Title')}
+                  value={newTitle}
+                  onChange={e => setNewTitle(e.target.value)}
+                  readOnly={isReadOnly}
+                  className={`flex-1 text-2xl font-bold bg-transparent outline-none text-[var(--text)] ${isReadOnly ? 'cursor-default' : ''}`}
+                />
+              </div>
+
+              {/* Professional Attachment Blocks - Grid Layout */}
+              {newAttachments.length > 0 && (
+                <div className="grid grid-cols-3 gap-2 mt-4 mb-2">
+                  {newAttachments.map((att, index) => (
+                    <motion.div 
+                      key={att.id} 
+                      layout
+                      className="glass rounded-2xl overflow-hidden border border-white/10 group relative shadow-xl flex flex-col h-32"
+                    >
+                      {/* Block Header/Controls - ALWAYS VISIBLE */}
+                      {!isReadOnly && (
+                        <div className="absolute top-1 right-1 z-10 flex flex-col gap-1 opacity-80 hover:opacity-100 transition-opacity">
+                          <button 
+                            onClick={() => setFullscreenImage(att.url)}
+                            className="p-1.5 rounded-md bg-indigo-500/90 text-white hover:bg-indigo-500 transition-colors shadow-lg backdrop-blur-md"
+                            title={t('Full Screen')}
+                          >
+                            <Eye className="w-3 h-3" />
+                          </button>
+                          <button 
+                            onClick={() => editAttachment(att)}
+                            className="p-1.5 rounded-md bg-blue-500/90 text-white hover:bg-blue-500 transition-colors shadow-lg backdrop-blur-md"
+                            title={t('Edit')}
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                          <button 
+                            onClick={() => removeAttachment(att.id)}
+                            className="p-1.5 rounded-md bg-red-500/90 text-white hover:bg-red-500 transition-colors shadow-lg backdrop-blur-md"
+                            title={t('Delete')}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Block Content */}
+                      <div className="flex-1 overflow-hidden relative bg-black/20">
+                        {att.type === 'table' ? (
+                          <div className="p-4 overflow-y-auto h-full">
+                            <div className="flex items-center gap-2 mb-2">
+                              <TableIcon className="w-4 h-4 text-[var(--color-accent-notes)]" />
+                              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{att.name}</span>
+                            </div>
+                            <table className="w-full border-collapse text-xs">
+                              <tbody>
+                                {att.tableData?.rows.slice(0, 3).map((row, rIdx) => (
+                                  <tr key={rIdx} className="border-b border-white/5 last:border-0">
+                                    {row.slice(0, 2).map((cell, cIdx) => (
+                                      <td key={cIdx} className="border-r border-white/5 last:border-0 p-1.5 text-white/80 truncate max-w-[80px]">
+                                        {cell}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : att.type === 'video' ? (
+                          <div className="w-full h-full bg-black flex items-center justify-center">
+                            <video 
+                              src={att.url} 
+                              controls 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : att.type === 'file' ? (
+                          <div className="w-full h-full flex flex-col items-center justify-center p-4 gap-2">
+                            <div className="w-12 h-12 rounded-xl bg-[var(--color-accent-notes)]/10 flex items-center justify-center border border-[var(--color-accent-notes)]/20">
+                              <FileText className="w-6 h-6 text-[var(--color-accent-notes)]" />
+                            </div>
+                            <div className="text-center w-full">
+                              <p className="text-xs font-bold text-white/90 truncate w-full px-2">{att.name}</p>
+                              <p className="text-[9px] text-gray-500 uppercase tracking-tighter">{att.fileType || 'Document'}</p>
+                            </div>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const a = document.createElement('a');
+                                a.href = att.url;
+                                a.download = att.name || 'download';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                              }}
+                              className="mt-1 px-3 py-1 rounded-lg glass text-[10px] font-bold hover:bg-white/10 transition-all"
+                            >
+                              {t('Download')}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="w-full h-full">
+                            <img 
+                              src={att.url} 
+                              alt={att.name} 
+                              className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                              onClick={() => setFullscreenImage(att.url)}
+                            />
+                            <div className="absolute bottom-2 left-2 glass px-2 py-0.5 rounded-full text-[9px] font-bold text-white/70">
+                              {att.type === 'camera' ? t('Photo') : t('Image')}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
 
               {/* Hidden Inputs */}
               <input type="file" ref={imageInputRef} className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'image')} />
+              <input type="file" ref={videoInputRef} className="hidden" accept="video/*" onChange={(e) => handleFileUpload(e, 'video')} />
               <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx" onChange={(e) => handleFileUpload(e, 'file')} />
 
               {/* Editor third */}
-              <div className="flex-1 flex flex-col min-h-[200px] quill-editor-container">
+              <div className="min-h-[300px] quill-editor-container relative overflow-visible">
                 <QuillEditor
                   ref={quillRef}
                   theme="snow"
@@ -927,7 +1109,7 @@ export default function Notes() {
                   modules={modules}
                   formats={formats}
                   placeholder={t('Start typing...')}
-                  className="h-full border-none"
+                  className="border-none"
                 />
 
                 {/* Floating Selection Toolbar */}
@@ -995,109 +1177,7 @@ export default function Notes() {
                 </AnimatePresence>
               </div>
 
-              {/* Professional Attachment Blocks - Vertical & Reorderable */}
-              <div className="space-y-6 mt-4">
-                {newAttachments.map((att, index) => (
-                  <motion.div 
-                    key={att.id} 
-                    layout
-                    className="glass rounded-2xl overflow-hidden border border-white/10 group relative shadow-xl"
-                  >
-                    {/* Block Header/Controls - ALWAYS VISIBLE */}
-                    {!isReadOnly && (
-                      <div className="absolute top-3 right-3 z-10 flex gap-2">
-                        <div className="flex bg-black/60 backdrop-blur-md rounded-xl p-1 border border-white/10">
-                          <button 
-                            disabled={index === 0}
-                            onClick={() => moveAttachment(att.id, 'up')}
-                            className="p-1.5 hover:bg-white/10 rounded-lg disabled:opacity-20 transition-colors"
-                          >
-                            <ChevronUp className="w-4 h-4 text-white" />
-                          </button>
-                          <button 
-                            disabled={index === newAttachments.length - 1}
-                            onClick={() => moveAttachment(att.id, 'down')}
-                            className="p-1.5 hover:bg-white/10 rounded-lg disabled:opacity-20 transition-colors"
-                          >
-                            <ChevronDown className="w-4 h-4 text-white" />
-                          </button>
-                        </div>
-                        <button 
-                          onClick={() => setFullscreenImage(att.url)}
-                          className="p-2 rounded-xl bg-indigo-500/90 text-white hover:bg-indigo-500 transition-colors shadow-lg backdrop-blur-md"
-                          title={t('Full Screen')}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button 
-                          onClick={() => editAttachment(att)}
-                          className="p-2 rounded-xl bg-blue-500/90 text-white hover:bg-blue-500 transition-colors shadow-lg backdrop-blur-md"
-                          title={t('Edit')}
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                        <button 
-                          onClick={() => removeAttachment(att.id)}
-                          className="p-2 rounded-xl bg-red-500/90 text-white hover:bg-red-500 transition-colors shadow-lg backdrop-blur-md"
-                          title={t('Delete')}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
 
-                    {/* Block Content */}
-                    <div className="p-1">
-                      {att.type === 'table' ? (
-                        <div className="p-4 overflow-x-auto">
-                          <div className="flex items-center gap-2 mb-4">
-                            <TableIcon className="w-4 h-4 text-[var(--color-accent-notes)]" />
-                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{att.name}</span>
-                          </div>
-                          <table className="w-full border-collapse">
-                            <tbody>
-                              {att.tableData?.rows.map((row, rIdx) => (
-                                <tr key={rIdx} className="border-b border-white/5 last:border-0">
-                                  {row.map((cell, cIdx) => (
-                                    <td key={cIdx} className="border-r border-white/5 last:border-0 p-3 text-sm text-white/80 min-w-[120px]">
-                                      {cell}
-                                    </td>
-                                  ))}
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      ) : att.type === 'file' ? (
-                        <div className="p-8 flex flex-col items-center justify-center bg-white/5 gap-3">
-                          <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent-notes)]/10 flex items-center justify-center border border-[var(--color-accent-notes)]/20">
-                            <FileText className="w-8 h-8 text-[var(--color-accent-notes)]" />
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm font-bold text-white/90">{att.name}</p>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-tighter">{att.fileType || 'Document'}</p>
-                          </div>
-                          <button className="mt-2 px-4 py-1.5 rounded-lg glass text-xs font-bold hover:bg-white/10 transition-all">
-                            {t('Download File')}
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="relative aspect-video sm:aspect-auto">
-                          <img 
-                            src={att.url} 
-                            alt={att.name} 
-                            className="w-full h-auto max-h-[500px] object-contain bg-black/20"
-                            onClick={() => setFullscreenImage(att.url)}
-                          />
-                          <div className="absolute bottom-4 left-4 glass px-3 py-1 rounded-full text-[10px] font-bold text-white/70">
-                            {att.type === 'camera' ? t('Captured Photo') : t('Image Attachment')}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
             </div>
 
             {/* Camera Overlay */}

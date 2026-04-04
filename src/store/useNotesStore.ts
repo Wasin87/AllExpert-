@@ -7,7 +7,7 @@ export interface NoteTable {
 
 export interface NoteAttachment {
   id: string;
-  type: 'image' | 'file' | 'camera' | 'drawing' | 'table';
+  type: 'image' | 'file' | 'camera' | 'drawing' | 'table' | 'video';
   url: string;
   name?: string;
   fileType?: string;
