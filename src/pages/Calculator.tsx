@@ -110,21 +110,21 @@ export default function Calculator() {
       textColor = 'text-white';
       shadowColor = 'rgba(191,0,255,0.4)';
     } else if (btn === 'C') {
-      bgColor = 'bg-red-500';
+      bgColor = 'bg-red-600';
       textColor = 'text-white';
-      shadowColor = 'rgba(239,68,68,0.4)';
+      shadowColor = 'rgba(220,38,38,0.4)';
     } else if (btn === 'DEL') {
       bgColor = 'bg-yellow-500';
       textColor = 'text-black';
       shadowColor = 'rgba(234,179,8,0.4)';
     } else if (isOperator) {
-      bgColor = 'bg-green-500';
+      bgColor = 'bg-green-600';
       textColor = 'text-white';
-      shadowColor = 'rgba(34,197,94,0.4)';
+      shadowColor = 'rgba(22,163,74,0.4)';
     } else if (btn === '()' || btn === '%') {
-      bgColor = 'bg-[#00B8D4]';
+      bgColor = 'bg-[#00838F]'; // Deep Aqua
       textColor = 'text-white';
-      shadowColor = 'rgba(0,184,212,0.4)';
+      shadowColor = 'rgba(0,131,143,0.4)';
     }
 
     return (
@@ -171,7 +171,7 @@ export default function Calculator() {
       </div>
 
       {/* Display */}
-      <div className="flex-1 flex flex-col justify-end p-6 pb-10 relative">
+      <div className="flex-1 flex flex-col justify-end p-6 pb-16 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-[var(--bg)] pointer-events-none" />
         <div 
           ref={displayRef}

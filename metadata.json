@@ -1,5 +1,5 @@
 {
   "name": "AllExpert",
-  "description": "",
-  "requestFramePermissions": []
+  "description": "Professional Notes, Calculator, and Tools application with advanced features.",
+  "requestFramePermissions": ["camera"]
 }

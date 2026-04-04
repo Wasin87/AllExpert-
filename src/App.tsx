@@ -29,6 +29,7 @@ import RockPaperScissors from './pages/games/RockPaperScissors';
 
 import About from './pages/About';
 import Privacy from './pages/Privacy';
+import BackgroundDots from './components/BackgroundDots';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -50,6 +51,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <BackgroundDots />
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Home />} />

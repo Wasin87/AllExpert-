@@ -1,6 +1,30 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface NoteTable {
+  rows: string[][];
+}
+
+export interface NoteAttachment {
+  id: string;
+  type: 'image' | 'file' | 'camera' | 'drawing' | 'table';
+  url: string;
+  name?: string;
+  fileType?: string;
+  tableData?: NoteTable;
+}
+
+export interface NoteFormatting {
+  color?: string;
+  fontSize?: number;
+  isBold?: boolean;
+  isItalic?: boolean;
+  isUnderline?: boolean;
+  lineSpacing?: string;
+  alignment?: 'left' | 'center' | 'right';
+  fontFamily?: string;
+}
+
 export interface Note {
   id: string;
   title: string;
@@ -8,6 +32,8 @@ export interface Note {
   category: string;
   isPinned: boolean;
   isHidden?: boolean;
+  attachments?: NoteAttachment[];
+  formatting?: NoteFormatting;
   createdAt: number;
   updatedAt: number;
 }

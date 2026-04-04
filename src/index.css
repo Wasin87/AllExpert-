@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Montserrat:wght@400;700&family=Lato:wght@400;700&family=Poppins:wght@400;700&family=Playfair+Display:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Merriweather:wght@400;700&family=Ubuntu:wght@400;700&family=Lora:wght@400;700&family=Nunito:wght@400;700&family=PT+Sans:wght@400;700&family=PT+Serif:wght@400;700&family=Mukta:wght@400;700&family=Kanit:wght@400;700&family=Quicksand:wght@400;700&family=Bebas+Neue&family=Josefin+Sans:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -68,4 +69,80 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .mask-fade-right {
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+}
+
+/* Animated Background Dots */
+.bg-dots {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(circle at center, #0D0E17 0%, #050508 100%);
+  overflow: hidden;
+}
+
+.dot {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Quill Custom Styles */
+.quill-editor-container .ql-container.ql-snow {
+  border: none !important;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.quill-editor-container .ql-editor {
+  padding: 0;
+  min-height: 300px;
+  color: inherit;
+}
+
+.quill-editor-container .ql-editor.ql-blank::before {
+  color: rgba(255, 255, 255, 0.2);
+  font-style: normal;
+  left: 0;
+}
+
+/* Custom List Styles for Quill */
+.ql-editor ol, .ql-editor ul {
+  padding-left: 1.5em !important;
+  margin-bottom: 1em;
+}
+
+.ql-editor ol li {
+  list-style-type: decimal !important;
+  padding-left: 0.5em;
+  margin-bottom: 0.25em;
+}
+
+.ql-editor ul li {
+  list-style-type: disc !important;
+  padding-left: 0.5em;
+  margin-bottom: 0.25em;
+}
+
+.ql-editor ol li::marker {
+  color: var(--color-accent-notes);
+  font-weight: bold;
+}
+
+.ql-editor ul li::marker {
+  color: var(--color-accent-notes);
+}
+
+.ql-editor ol li[data-list="roman"] {
+  list-style-type: upper-roman !important;
 }

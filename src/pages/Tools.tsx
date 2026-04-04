@@ -8,12 +8,6 @@ import TasbihIcon from '@/components/icons/TasbihIcon';
 export default function Tools() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(timer);
-  }, []);
 
   const tools = [
     { id: 'games', icon: Gamepad2, label: 'Game Zone', path: '/games', color: 'bg-indigo-500', desc: 'Play fun mini-games' },
@@ -23,19 +17,23 @@ export default function Tools() {
     { id: 'converter', icon: ArrowRightLeft, label: 'Converter', path: '/converter', color: 'bg-[var(--color-accent-conv)]', desc: 'Convert all units' },
   ];
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <div className="p-6 h-full flex flex-col bg-[var(--bg)] pb-24 relative">
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-[var(--bg)] flex items-center justify-center"
-          >
-            <Loader2 className="w-8 h-8 text-[var(--color-accent-tools)] animate-spin" />
-          </motion.div>
-        )}
-      </AnimatePresence>
       <div 
         className="flex items-center gap-2 mb-6 cursor-pointer group w-fit"
         onClick={() => navigate('/')}
@@ -46,13 +44,16 @@ export default function Tools() {
         <h2 className="text-2xl font-bold text-[var(--color-accent-tools)] drop-shadow-[0_0_12px_rgba(0,242,255,0.3)]">{t('Tools')}</h2>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {tools.map((tool, index) => (
+      <motion.div 
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+      >
+        {tools.map((tool) => (
           <motion.div
             key={tool.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            variants={item}
           >
             <Link to={tool.path} className="glass rounded-[1.5rem] p-5 flex items-center gap-5 group hover:bg-white/5 transition-all duration-300 border border-white/10 hover:scale-[1.02] shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
               <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-white shadow-lg ${tool.color} group-hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] transition-all`}>
@@ -65,7 +66,7 @@ export default function Tools() {
             </Link>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
