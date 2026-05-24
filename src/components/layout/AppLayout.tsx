@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 import ParticleBackground from '@/components/ui/ParticleBackground';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -115,6 +116,7 @@ export default function AppLayout() {
           })}
         </ul>
       </nav>
+      <PWAInstallPrompt />
     </div>
   );
 }
