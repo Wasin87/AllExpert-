@@ -302,8 +302,8 @@ export default function Notes() {
         return;
       }
       setEditingNote(note);
-      setNewTitle(note.title);
-      setNewContent(note.content);
+      setNewTitle(note.title ?? '');
+      setNewContent(note.content ?? '');
       setNewCategory(note.category || 'Personal');
       setNewAttachments(note.attachments || []);
       setNewFormatting(note.formatting || {
@@ -610,7 +610,7 @@ export default function Notes() {
           <input 
             type="text" 
             placeholder={t('Search notes')}
-            value={search}
+            value={search || ''}
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-2xl glass outline-none border border-white/5 focus:border-[var(--color-accent-notes)]/50 transition-all text-sm text-white placeholder-gray-600"
           />
@@ -912,7 +912,7 @@ export default function Notes() {
                           type="text" 
                           inputMode="numeric"
                           placeholder="16"
-                          value={fontSizeInput}
+                          value={fontSizeInput || ''}
                           onFocus={handleInputFocus}
                           onKeyDown={(e) => {
                             e.stopPropagation();
@@ -936,14 +936,14 @@ export default function Notes() {
                     <div className="h-6 w-px bg-white/10 flex-shrink-0" />
                     <div className="relative flex-shrink-0" onMouseDown={(e) => e.stopPropagation()}>
                       <select 
-                        value={quillRef.current?.getEditor().getFormat().font || 'Inter'}
+                        value={currentFormat?.font || 'Inter'}
                         onChange={(e) => {
                           applyFormat('font', e.target.value);
                           // Force focus back to editor after selection
                           setTimeout(() => quillRef.current?.getEditor().focus(), 10);
                         }}
                         className="bg-white/5 border border-white/10 rounded-lg px-2 py-1.5 text-xs outline-none text-white appearance-none pr-6 min-w-[100px]"
-                        style={{ fontFamily: quillRef.current?.getEditor().getFormat().font || 'Inter' }}
+                        style={{ fontFamily: currentFormat?.font || 'Inter' }}
                       >
                         {FONT_FAMILIES.map(font => (
                           <option key={font} value={font} className="bg-gray-900 text-white" style={{ fontFamily: font }}>
@@ -964,7 +964,7 @@ export default function Notes() {
               <div className="flex-shrink-0">
                 <div className="relative group">
                   <select 
-                    value={newCategory}
+                    value={newCategory || 'Personal'}
                     onChange={e => setNewCategory(e.target.value)}
                     disabled={isReadOnly}
                     className={`bg-white/5 border border-white/10 rounded-lg px-2.5 py-1.5 text-[10px] text-[var(--color-accent-notes)] outline-none font-bold tracking-widest uppercase transition-all hover:bg-white/10 ${isReadOnly ? 'cursor-default appearance-none' : 'cursor-pointer'}`}
@@ -1009,7 +1009,7 @@ export default function Notes() {
                 <input
                   type="text"
                   placeholder={t('Title')}
-                  value={newTitle}
+                  value={newTitle || ''}
                   onChange={e => setNewTitle(e.target.value)}
                   readOnly={isReadOnly}
                   className={`flex-1 text-2xl font-bold bg-transparent outline-none text-[var(--text)] ${isReadOnly ? 'cursor-default' : ''}`}
@@ -1295,7 +1295,7 @@ export default function Notes() {
                   <input
                     type="password"
                     placeholder={isChangingPassword ? t('Current Password') : t('Password')}
-                    value={passwordInput}
+                    value={passwordInput || ''}
                     onChange={e => {
                       setPasswordInput(e.target.value);
                       setPasswordError('');
@@ -1314,7 +1314,7 @@ export default function Notes() {
                     <input
                       type="password"
                       placeholder={t('New Password')}
-                      value={newPasswordInput}
+                      value={newPasswordInput || ''}
                       onChange={e => {
                         setNewPasswordInput(e.target.value);
                         setPasswordError('');

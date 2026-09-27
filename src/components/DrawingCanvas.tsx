@@ -130,7 +130,7 @@ export default function DrawingCanvas({ initialImage, onSave, onClose }: Drawing
           </div>
           <input 
             type="color" 
-            value={color} 
+            value={color || '#000000'} 
             onChange={(e) => setColor(e.target.value)}
             className="w-8 h-8 rounded cursor-pointer bg-transparent border-none"
           />

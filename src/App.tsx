@@ -22,6 +22,9 @@ import More from './pages/More';
 import Tasbih from './pages/tools/Tasbih';
 import Stopwatch from './pages/tools/Stopwatch';
 import PasswordGenerator from './pages/tools/PasswordGenerator';
+import QRCodeGenerator from './pages/tools/QRCodeGenerator';
+import ShortUrl from './pages/tools/ShortUrl';
+import ShortRedirect from './pages/tools/ShortRedirect';
 
 import GameList from './pages/games/GameList';
 import TicTacToe from './pages/games/TicTacToe';
@@ -39,9 +42,13 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Fast responsive startup
+    const hasLoaded = sessionStorage.getItem('allexpert_session_ready');
+    const delay = hasLoaded ? 0 : 350;
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+      sessionStorage.setItem('allexpert_session_ready', 'true');
+    }, delay);
     return () => clearTimeout(timer);
   }, []);
 
@@ -59,6 +66,8 @@ export default function App() {
           <Route path="converter" element={<Converter />} />
           <Route path="notes" element={<Notes />} />
           <Route path="tools" element={<Tools />} />
+          <Route path="tools/qrcode" element={<QRCodeGenerator />} />
+          <Route path="tools/shorturl" element={<ShortUrl />} />
           <Route path="tools/tasbih" element={<Tasbih />} />
           <Route path="tools/stopwatch" element={<Stopwatch />} />
           <Route path="tools/password" element={<PasswordGenerator />} />
@@ -71,6 +80,7 @@ export default function App() {
           <Route path="more" element={<More />} />
           <Route path="about" element={<About />} />
           <Route path="privacy" element={<Privacy />} />
+          <Route path="s/:code" element={<ShortRedirect />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

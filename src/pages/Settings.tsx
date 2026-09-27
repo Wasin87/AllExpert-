@@ -25,7 +25,7 @@ export default function Settings() {
             <span className="font-medium">{t('Language')}</span>
           </div>
           <select 
-            value={language}
+            value={language || 'en'}
             onChange={(e) => setLanguage(e.target.value as 'en' | 'bn')}
             className="bg-transparent outline-none font-medium text-[var(--color-accent-blue)]"
           >

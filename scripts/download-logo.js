@@ -17,7 +17,7 @@ if (!fs.existsSync(PUBLIC_DIR)) {
 const downloadFile = (url, dest) => {
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(dest);
-    https.get(url, (response) => {
+    const req = https.get(url, { timeout: 2500 }, (response) => {
       if (response.statusCode !== 200) {
         reject(new Error(`Failed to download: Status Code ${response.statusCode}`));
         return;
@@ -27,7 +27,14 @@ const downloadFile = (url, dest) => {
         file.close();
         resolve();
       });
-    }).on('error', (err) => {
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('Connection timed out'));
+    });
+
+    req.on('error', (err) => {
       fs.unlink(dest, () => {});
       reject(err);
     });
@@ -35,9 +42,14 @@ const downloadFile = (url, dest) => {
 };
 
 async function main() {
+  const tempDest = path.join(PUBLIC_DIR, 'logo.png');
+  const icon192 = path.join(PUBLIC_DIR, 'icon-192.png');
+
+  // If assets already exist, we don't need to block the build
+  const hasExistingAssets = fs.existsSync(icon192) && fs.statSync(icon192).size > 0;
+
   try {
     console.log("Downloading existing website logo for PWA assets...");
-    const tempDest = path.join(PUBLIC_DIR, 'logo.png');
     await downloadFile(LOGO_URL, tempDest);
     
     // Copy the logo to standard icon paths for robustness
@@ -49,8 +61,11 @@ async function main() {
     
     console.log("All PWA assets downloaded and prepared successfully!");
   } catch (error) {
-    console.error("Error setting up logo files:", error);
-    process.exit(1);
+    if (hasExistingAssets) {
+      console.warn("External network unavailable during build, using existing PWA icons in /public.");
+      return;
+    }
+    console.error("Warning: Could not download logo, but continuing build:", error.message);
   }
 }
 

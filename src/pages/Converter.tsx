@@ -170,7 +170,7 @@ export default function Converter() {
         <div className="glass rounded-[2rem] p-6 relative border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
           <div className="relative mb-4">
             <select 
-              value={fromUnit}
+              value={fromUnit || ''}
               onChange={(e) => setFromUnit(e.target.value)}
               className="bg-white/5 text-gray-300 text-xs font-medium outline-none px-3 py-1.5 rounded-lg appearance-none pr-8 cursor-pointer border border-white/5 hover:border-white/10 transition-all"
             >
@@ -181,7 +181,7 @@ export default function Converter() {
           <input
             type={isNumberSystem ? "text" : "number"}
             inputMode={isNumberSystem ? "text" : "decimal"}
-            value={fromValue}
+            value={fromValue ?? ''}
             onChange={(e) => setFromValue(e.target.value)}
             className="w-full bg-transparent text-5xl font-light outline-none text-white placeholder-gray-700 drop-shadow-[0_0_10px_rgba(255,255,255,0.1)]"
             placeholder="0"
@@ -212,7 +212,7 @@ export default function Converter() {
         <div className="glass rounded-[2rem] p-6 relative border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
           <div className="relative mb-4">
             <select 
-              value={toUnit}
+              value={toUnit || ''}
               onChange={(e) => setToUnit(e.target.value)}
               className="bg-white/5 text-gray-300 text-xs font-medium outline-none px-3 py-1.5 rounded-lg appearance-none pr-8 cursor-pointer border border-white/5 hover:border-white/10 transition-all"
             >
@@ -222,7 +222,7 @@ export default function Converter() {
           </div>
           <input
             type={isNumberSystem ? "text" : "number"}
-            value={toValue}
+            value={toValue ?? ''}
             readOnly
             className="w-full bg-transparent text-5xl font-light outline-none text-[var(--color-accent-conv)] placeholder-gray-700/50 drop-shadow-[0_0_15px_rgba(0,242,255,0.3)]"
             placeholder="0"

@@ -71,6 +71,11 @@ const resources = {
       "New password must be at least 4 characters": "New password must be at least 4 characters",
       "Are you sure you want to reset your password? This will unhide all hidden notes.": "Are you sure you want to reset your password? This will unhide all hidden notes.",
       "Enter your current password and a new one.": "Enter your current password and a new one.",
+      "QR Code Generator": "QR Code Generator",
+      "URL Shortener": "URL Shortener",
+      "Short URL": "Short URL",
+      "URL, PDF, PPTX, Image & Text to QR": "URL, PDF, PPTX, Image & Text to QR",
+      "Shorten long URLs with instant redirection": "Shorten long URLs with instant redirection",
     }
   },
   bn: {
@@ -142,6 +147,11 @@ const resources = {
       "New password must be at least 4 characters": "নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে",
       "Are you sure you want to reset your password? This will unhide all hidden notes.": "আপনি কি নিশ্চিত যে আপনি আপনার পাসওয়ার্ড রিসেট করতে চান? এটি সমস্ত লুকানো নোট প্রদর্শন করবে।",
       "Enter your current password and a new one.": "আপনার বর্তমান পাসওয়ার্ড এবং একটি নতুন পাসওয়ার্ড লিখুন।",
+      "QR Code Generator": "QR কোড জেনারেটর",
+      "URL Shortener": "ইউআরএল শর্টনার",
+      "Short URL": "শর্ট ইউআরএল",
+      "URL, PDF, PPTX, Image & Text to QR": "URL, PDF, PPTX, ছবি ও টেক্সট থেকে QR",
+      "Shorten long URLs with instant redirection": "লম্বা লিঙ্ককে দ্রুত শর্ট লিঙ্কে রূপান্তর করুন",
     }
   }
 };

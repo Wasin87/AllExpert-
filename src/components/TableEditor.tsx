@@ -10,9 +10,12 @@ interface TableEditorProps {
 }
 
 export default function TableEditor({ initialData, onSave, onClose }: TableEditorProps) {
-  const [rows, setRows] = useState<string[][]>(
-    initialData?.rows || [['', ''], ['', '']]
-  );
+  const [rows, setRows] = useState<string[][]>(() => {
+    if (initialData?.rows && initialData.rows.length > 0) {
+      return initialData.rows.map(r => r.map(c => c ?? ''));
+    }
+    return [['', ''], ['', '']];
+  });
 
   const updateCell = (r: number, c: number, val: string) => {
     const newRows = [...rows];
@@ -82,7 +85,7 @@ export default function TableEditor({ initialData, onSave, onClose }: TableEdito
                   <td key={cIndex} className="border border-white/10 p-0">
                     <input
                       type="text"
-                      value={cell}
+                      value={cell ?? ''}
                       onChange={(e) => updateCell(rIndex, cIndex, e.target.value)}
                       className="w-full h-full bg-transparent p-2 outline-none text-sm text-white focus:bg-white/5"
                     />

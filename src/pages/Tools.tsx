@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'motion/react';
-import { Timer, Key, ArrowRightLeft, ChevronLeft, Gamepad2, Loader2 } from 'lucide-react';
+import { Timer, Key, ArrowRightLeft, ChevronLeft, Gamepad2, Loader2, QrCode, Link2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import TasbihIcon from '@/components/icons/TasbihIcon';
 
@@ -10,6 +10,8 @@ export default function Tools() {
   const navigate = useNavigate();
 
   const tools = [
+    { id: 'qrcode', icon: QrCode, label: 'QR Code Generator', path: '/tools/qrcode', color: 'bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.4)]', desc: 'URL, Text, Wi-Fi, Contact & More to QR' },
+    { id: 'shorturl', icon: Link2, label: 'URL Shortener', path: '/tools/shorturl', color: 'bg-violet-600 shadow-[0_0_20px_rgba(139,92,246,0.4)]', desc: 'Shorten long URLs with instant redirection' },
     { id: 'games', icon: Gamepad2, label: 'Game Zone', path: '/games', color: 'bg-indigo-500', desc: 'Play fun mini-games' },
     { id: 'stopwatch', icon: Timer, label: 'Stopwatch', path: '/tools/stopwatch', color: 'bg-red-500', desc: 'Track time with laps' },
     { id: 'password', icon: Key, label: 'Password Generator', path: '/tools/password', color: 'bg-green-500', desc: 'Secure random passwords' },
