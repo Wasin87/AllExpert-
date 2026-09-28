@@ -11,14 +11,9 @@ export default function LoadingScreen() {
       >
         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-[var(--color-accent-blue)] shadow-[0_0_30px_rgba(59,130,246,0.5)]">
           <img 
-            src="https://i.ibb.co/mrGsQ2GT/logo.png" 
+            src="/logo.png" 
             alt="AllExpert Logo" 
             className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              // Fallback if image fails to load
-              e.currentTarget.src = "https://picsum.photos/seed/allexpert/200/200";
-            }}
           />
         </div>
         <motion.div

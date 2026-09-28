@@ -122,7 +122,7 @@ export default function PWAInstallPrompt() {
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-black/40 flex-shrink-0">
-                    <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="Logo" className="w-full h-full object-cover" />
+                    <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white flex items-center gap-1.5">
@@ -170,7 +170,7 @@ export default function PWAInstallPrompt() {
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-[0_0_15px_rgba(59,130,246,0.3)] bg-black/40 flex-shrink-0">
-                    <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="Logo" className="w-full h-full object-cover" />
+                    <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-white flex items-center gap-1.5">

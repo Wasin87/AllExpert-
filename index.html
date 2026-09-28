@@ -3,27 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-    <title>AllExpert</title>
+    <title>AllExpert – Notes, Calculator, QR Generator & Productivity Tools</title>
     
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="AllExpert – Notes, Calculator, QR Generator & Productivity Tools" />
+    <meta name="description" content="AllExpert is a professional suite of digital productivity tools featuring rich Notes with media, Smart Calculator, Unit Converter, QR Code Generator, URL Shortener, Games, and more." />
+    <meta name="keywords" content="AllExpert, Notes App, Calculator, QR Code Generator, URL Shortener, Unit Converter, Password Generator, Tasbih, Productivity Tools" />
+    <meta name="author" content="AllExpert" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon & Icons for Browser Tabs (SVG, PNG, ICO, Apple Touch) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="180x180" href="/logo.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <!-- OpenGraph / Facebook Social Cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AllExpert" />
+    <meta property="og:title" content="AllExpert – Notes, Calculator, QR Generator & Productivity Tools" />
+    <meta property="og:description" content="AllExpert is a professional suite of digital productivity tools featuring rich Notes with media, Smart Calculator, Unit Converter, QR Code Generator, URL Shortener, Games, and more." />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:image:width" content="180" />
+    <meta property="og:image:height" content="180" />
+    <meta property="og:image:alt" content="AllExpert Logo" />
+
+    <!-- Twitter / X Social Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AllExpert – Notes, Calculator, QR Generator & Productivity Tools" />
+    <meta name="twitter:description" content="AllExpert is a professional suite of digital productivity tools featuring rich Notes with media, Smart Calculator, Unit Converter, QR Code Generator, URL Shortener, Games, and more." />
+    <meta name="twitter:image" content="/logo.png" />
+
     <!-- PWA & Theme elements -->
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#0b0f19" />
     
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    
-    <!-- iOS support -->
+    <!-- iOS Support -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="AllExpert" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Schema.org JSON-LD Structured Data for Search Engine Optimization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "AllExpert",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "All",
+      "description": "Professional suite of digital productivity tools including rich Notes, Smart Calculator, Unit Converter, QR Code Generator, and URL Shortener.",
+      "image": "/logo.png",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
   <body style="background-color: #000; margin: 0;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Service Worker script -->
+    <!-- Service Worker Script -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
@@ -39,4 +83,3 @@
     </script>
   </body>
 </html>
-

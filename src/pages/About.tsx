@@ -28,7 +28,7 @@ export default function About() {
           <div className="relative group">
             <div className="absolute inset-0 bg-[var(--color-accent-blue)]/20 blur-3xl rounded-full group-hover:bg-[var(--color-accent-blue)]/40 transition-all duration-500" />
             <div className="w-24 h-24 rounded-[2rem] overflow-hidden border-4 border-white/10 mb-4 shadow-2xl relative z-10">
-              <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
             </div>
           </div>
           <h1 className="text-3xl font-black tracking-tighter text-white">
@@ -77,7 +77,7 @@ export default function About() {
               {t('Lead Developer')}
             </h3>
             <div className="w-8 h-8 rounded-xl bg-white/5 p-1.5 border border-white/10">
-              <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="Logo" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           <div className="flex items-center gap-4">

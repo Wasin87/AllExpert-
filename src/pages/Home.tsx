@@ -24,7 +24,7 @@ export default function Home() {
       <header className="flex justify-between items-center pt-2">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex items-center justify-center border border-white/10 shadow-[0_0_12px_rgba(255,255,255,0.1)]">
-            <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-xl font-bold tracking-tight text-white">
             All<span className="text-[var(--color-accent-blue)]">Expert</span>

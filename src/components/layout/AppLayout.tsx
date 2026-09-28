@@ -16,6 +16,26 @@ export default function AppLayout() {
     if (mainRef.current) {
       mainRef.current.scrollTo(0, 0);
     }
+
+    // Dynamic SEO Page Title update
+    const path = location.pathname;
+    let title = 'AllExpert – Notes, Calculator, QR Generator & Productivity Tools';
+
+    if (path.startsWith('/notes')) title = 'Notes & Media Vault – AllExpert';
+    else if (path.startsWith('/calculator')) title = 'Smart Calculator – AllExpert';
+    else if (path === '/tools/qrcode') title = 'QR Code Generator – AllExpert';
+    else if (path === '/tools/shorturl') title = 'URL Shortener – AllExpert';
+    else if (path === '/tools/tasbih') title = 'Digital Tasbih Counter – AllExpert';
+    else if (path === '/tools/stopwatch') title = 'Precision Stopwatch – AllExpert';
+    else if (path === '/tools/password') title = 'Password Generator – AllExpert';
+    else if (path.startsWith('/converter')) title = 'Unit Converter – AllExpert';
+    else if (path.startsWith('/tools')) title = 'Productivity Tools – AllExpert';
+    else if (path.startsWith('/games')) title = 'Game Zone – AllExpert';
+    else if (path.startsWith('/settings')) title = 'App Settings – AllExpert';
+    else if (path.startsWith('/about')) title = 'About Us – AllExpert';
+    else if (path.startsWith('/privacy')) title = 'Privacy Policy – AllExpert';
+
+    document.title = title;
   }, [location.pathname]);
 
   const navItems = [
@@ -34,7 +54,7 @@ export default function AppLayout() {
       <aside className="hidden md:flex flex-col w-48 glass border-r border-white/5 z-50">
         <div className="p-4 flex items-center gap-2">
           <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-[var(--color-accent-blue)] shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-            <img src="https://i.ibb.co/mrGsQ2GT/logo.png" alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="text-base font-bold tracking-tight text-white">
             All<span className="text-[var(--color-accent-blue)]">Expert</span>
