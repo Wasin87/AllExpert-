@@ -5,6 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useNotesStore } from '@/store/useNotesStore';
 import { useCalcStore } from '@/store/useCalcStore';
 
+import AppLogo from '@/components/ui/AppLogo';
+
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -22,14 +24,9 @@ export default function Home() {
     <div className="p-6 space-y-8 pb-32">
       {/* Header */}
       <header className="flex justify-between items-center pt-2">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full overflow-hidden bg-white/10 flex items-center justify-center border border-white/10 shadow-[0_0_12px_rgba(255,255,255,0.1)]">
-            <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-xl font-bold tracking-tight text-white">
-            All<span className="text-[var(--color-accent-blue)]">Expert</span>
-          </h1>
-        </div>
+        <Link to="/" className="hover:opacity-90 transition-opacity">
+          <AppLogo showText={true} badgeSize="w-9 h-9" textSize="text-xl" />
+        </Link>
         <div className="flex gap-1.5">
           <button onClick={() => navigate('/notes')} className="p-1.5 rounded-full glass hover:bg-white/10 transition-colors">
             <Search className="w-5 h-5 text-gray-300" />

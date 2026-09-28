@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import ParticleBackground from '@/components/ui/ParticleBackground';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 
+import AppLogo from '@/components/ui/AppLogo';
+
 export default function AppLayout() {
   const { t } = useTranslation();
   const location = useLocation();
@@ -52,13 +54,8 @@ export default function AppLayout() {
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-48 glass border-r border-white/5 z-50">
-        <div className="p-4 flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-[var(--color-accent-blue)] shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-            <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
-          </div>
-          <h1 className="text-base font-bold tracking-tight text-white">
-            All<span className="text-[var(--color-accent-blue)]">Expert</span>
-          </h1>
+        <div className="p-4 border-b border-white/5">
+          <AppLogo showText={true} badgeSize="w-8 h-8" textSize="text-base" />
         </div>
         <nav className="flex-1 px-2.5 py-3">
           <ul className="space-y-0.5">

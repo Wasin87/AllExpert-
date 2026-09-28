@@ -3,6 +3,8 @@ import { ChevronLeft, Code2, Heart, Mail, Globe, Shield, Zap, Cpu } from 'lucide
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 
+import AppLogo from '@/components/ui/AppLogo';
+
 export default function About() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -25,11 +27,9 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center mb-10"
         >
-          <div className="relative group">
+          <div className="relative group mb-4">
             <div className="absolute inset-0 bg-[var(--color-accent-blue)]/20 blur-3xl rounded-full group-hover:bg-[var(--color-accent-blue)]/40 transition-all duration-500" />
-            <div className="w-24 h-24 rounded-[2rem] overflow-hidden border-4 border-white/10 mb-4 shadow-2xl relative z-10">
-              <img src="/logo.png" alt="AllExpert Logo" className="w-full h-full object-cover" />
-            </div>
+            <AppLogo showText={false} badgeSize="w-24 h-24" />
           </div>
           <h1 className="text-3xl font-black tracking-tighter text-white">
             All<span className="text-[var(--color-accent-blue)] drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]">Expert</span>
@@ -76,9 +76,7 @@ export default function About() {
               <Code2 className="w-5 h-5 text-[var(--color-accent-blue)]" />
               {t('Lead Developer')}
             </h3>
-            <div className="w-8 h-8 rounded-xl bg-white/5 p-1.5 border border-white/10">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
-            </div>
+            <AppLogo showText={false} badgeSize="w-8 h-8" />
           </div>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[var(--color-accent-blue)] to-purple-600 flex items-center justify-center text-white text-sm font-black shadow-[0_0_15px_rgba(59,130,246,0.3)] shrink-0">
